@@ -18,5 +18,5 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: "Validation failed", errors: result.errors }, { status: 400 });
     }
 
-    return NextResponse.json({ data: "Room type created successfully" });
+    return NextResponse.json({ data: result.data }, { status: 201 });
 }

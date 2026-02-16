@@ -16,3 +16,12 @@ export const updateRoomTypeSchema = z.object({
 
 export type CreateRoomTypeInput = z.infer<typeof createRoomTypeSchema>;
 export type UpdateRoomTypeInput = z.infer<typeof updateRoomTypeSchema>;
+
+export type RoomType = {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+    isDeleted: boolean;
+};
+

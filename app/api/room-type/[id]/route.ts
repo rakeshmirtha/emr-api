@@ -61,7 +61,7 @@ export async function PUT(
         );
     }
 
-    return NextResponse.json({ data: "Room type updated successfully" });
+    return NextResponse.json({ data: result.data });
 }
 
 export async function DELETE(
