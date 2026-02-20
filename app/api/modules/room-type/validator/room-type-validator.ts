@@ -1,24 +1,40 @@
 import { createRoomTypeSchema, CreateRoomTypeInput, updateRoomTypeSchema, UpdateRoomTypeInput } from "../schemas/room-type-schema";
 import { ValidationResult } from "../../../utils/utils";
+import { roomTypeRepository } from "../repository/room-type-repository";
 
-export function validateCreateRoomType(payload: unknown): ValidationResult<CreateRoomTypeInput> {
+export async function validateCreateRoomType(payload: unknown): Promise<ValidationResult<CreateRoomTypeInput>> {
     const result = createRoomTypeSchema.safeParse(payload);
     
-    if (result.success) {
-        return { success: true, data: result.data };
+    if (!result.success) {
+        const errors = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
+        return { success: false, errors };
     }
 
-    const errors = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
-    return { success: false, errors };
+    // Check for duplicate name
+    const nameExists = await roomTypeRepository.checkRoomTypeNameExists(result.data.name);
+    if (nameExists) {
+        return { success: false, errors: ["name: A room type with this name already exists"] };
+    }
+
+    return { success: true, data: result.data };
 }
 
-export function validateUpdateRoomType(payload: unknown): ValidationResult<UpdateRoomTypeInput> {
+
+export async function validateUpdateRoomType(id: number, payload: unknown): Promise<ValidationResult<UpdateRoomTypeInput>> {
     const result = updateRoomTypeSchema.safeParse(payload);
     
-    if (result.success) {
-        return { success: true, data: result.data };
+    if (!result.success) {
+        const errors = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
+        return { success: false, errors };
     }
 
-    const errors = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
-    return { success: false, errors };
+    // Check for duplicate name if name is being updated
+    if (result.data.name) {
+        const nameExists = await roomTypeRepository.checkRoomTypeNameExists(result.data.name, id);
+        if (nameExists) {
+            return { success: false, errors: ["name: A room type with this name already exists"] };
+        }
+    }
+
+    return { success: true, data: result.data };
 }

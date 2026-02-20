@@ -4,7 +4,7 @@ import { CommandResult } from "../../../utils/utils";
 import { RoomType } from "../schemas/room-type-schema";
 
 export async function createRoomTypeCommand(payload: unknown): Promise<CommandResult<RoomType>> {
-    const validationResult = validateCreateRoomType(payload);
+    const validationResult = await validateCreateRoomType(payload);
     
     if (!validationResult.success) {
         return { success: false, errors: validationResult.errors };

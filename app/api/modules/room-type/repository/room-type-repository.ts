@@ -1,7 +1,7 @@
 import { db } from "@/app/db";
 import { roomTypeTable } from "@/app/db/schema/room-type";
 import { CreateRoomTypeInput, UpdateRoomTypeInput } from "../schemas/room-type-schema";
-import { eq } from "drizzle-orm";
+import { eq, count } from "drizzle-orm";
 
 async function createRoomType(data: CreateRoomTypeInput) {
     const [createdRoomType] = await db.insert(roomTypeTable).values({
@@ -20,17 +20,29 @@ async function createRoomType(data: CreateRoomTypeInput) {
 }
 
 
-async function getRoomTypes() {
-    return await db
-        .select({
-            id: roomTypeTable.id,
-            name: roomTypeTable.name,
-            description: roomTypeTable.description,
-            isActive: roomTypeTable.isActive,
-            isDeleted: roomTypeTable.isDeleted,
-        })
-        .from(roomTypeTable)
-        .where(eq(roomTypeTable.isDeleted, false));
+async function getRoomTypes({ page = 1, limit = 10 }: { page?: number; limit?: number } = {}) {
+    const offset = (page - 1) * limit;
+
+    const [data, [{ total }]] = await Promise.all([
+        db
+            .select({
+                id: roomTypeTable.id,
+                name: roomTypeTable.name,
+                description: roomTypeTable.description,
+                isActive: roomTypeTable.isActive,
+                isDeleted: roomTypeTable.isDeleted,
+            })
+            .from(roomTypeTable)
+            .where(eq(roomTypeTable.isDeleted, false))
+            .limit(limit)
+            .offset(offset),
+        db
+            .select({ total: count() })
+            .from(roomTypeTable)
+            .where(eq(roomTypeTable.isDeleted, false)),
+    ]);
+
+    return { data, total };
 }
 
 async function getRoomTypeById(id: number) {
@@ -87,10 +99,52 @@ async function deleteRoomType(id: number): Promise<void> {
         .where(eq(roomTypeTable.id, id));
 }
 
+async function checkRoomTypeNameExists(name: string, excludeId?: number): Promise<boolean> {
+    const result = await db
+        .select({ 
+            id: roomTypeTable.id,
+            isDeleted: roomTypeTable.isDeleted
+        })
+        .from(roomTypeTable)
+        .where(eq(roomTypeTable.name, name))
+        .limit(1);
+    
+    if (result.length === 0 || result[0].isDeleted) {
+        return false;
+    }
+    
+    if (excludeId !== undefined && result[0].id === excludeId) {
+        return false;
+    }
+    
+    return true;
+}
+
+async function isRoomTypeInUse(id: number): Promise<{ inUse: boolean; count: number }> {
+    const { roomTable } = await import("@/app/db/schema/room");
+    
+    const result = await db
+        .select({ 
+            id: roomTable.id,
+            isDeleted: roomTable.isDeleted
+        })
+        .from(roomTable)
+        .where(eq(roomTable.roomTypeId, id));
+    
+    const activeRooms = result.filter(room => !room.isDeleted);
+    
+    return {
+        inUse: activeRooms.length > 0,
+        count: activeRooms.length
+    };
+}
+
 export const roomTypeRepository = {
     createRoomType,
     getRoomTypes,
     getRoomTypeById,
     updateRoomType,
-    deleteRoomType
+    deleteRoomType,
+    checkRoomTypeNameExists,
+    isRoomTypeInUse
 }

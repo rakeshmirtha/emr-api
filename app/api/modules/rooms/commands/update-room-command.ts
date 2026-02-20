@@ -2,7 +2,7 @@ import { roomRepository } from "../repository/room-repository";
 import { validateUpdateRoom } from "../validator/room-validator";
 
 export async function updateRoomCommand(id: number, payload: unknown) {
-    const validationResult = validateUpdateRoom(payload);
+    const validationResult = await validateUpdateRoom(id, payload);
     
     if (!validationResult.success) {
         return { success: false, errors: validationResult.errors };

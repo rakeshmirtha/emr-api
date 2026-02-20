@@ -4,7 +4,7 @@ import { CommandResult } from "../../../utils/utils";
 import { RoomType } from "../schemas/room-type-schema";
 
 export async function updateRoomTypeCommand(id: number, payload: unknown): Promise<CommandResult<RoomType>> {
-    const validationResult = validateUpdateRoomType(payload);
+    const validationResult = await validateUpdateRoomType(id, payload);
     
     if (!validationResult.success) {
         return { success: false, errors: validationResult.errors };

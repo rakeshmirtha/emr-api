@@ -42,7 +42,6 @@ async function createRoom(data: CreateRoomInput) {
         isDeleted: roomTable.isDeleted,
     });
     
-    // Fetch the room with room type data
     const roomWithType = await getRoomById(createdRoom.id);
     return roomWithType!;
 }
@@ -94,7 +93,6 @@ async function updateRoom(id: number, data: UpdateRoomInput) {
         .set(updateData)
         .where(eq(roomTable.id, id));
     
-    // Fetch updated room with room type data
     const updatedRoom = await getRoomById(id);
     return updatedRoom!;
 }
@@ -106,10 +104,32 @@ async function deleteRoom(id: number): Promise<void> {
         .where(eq(roomTable.id, id));
 }
 
+async function checkRoomNameExists(name: string, excludeId?: number): Promise<boolean> {
+    const result = await db
+        .select({ 
+            id: roomTable.id,
+            isDeleted: roomTable.isDeleted
+        })
+        .from(roomTable)
+        .where(eq(roomTable.name, name))
+        .limit(1);
+    
+    if (result.length === 0 || result[0].isDeleted) {
+        return false;
+    }
+    
+    if (excludeId !== undefined && result[0].id === excludeId) {
+        return false;
+    }
+    
+    return true;
+}
+
 export const roomRepository = {
     getRooms,
     getRoomById,
     createRoom,
     updateRoom,
-    deleteRoom
+    deleteRoom,
+    checkRoomNameExists
 }
