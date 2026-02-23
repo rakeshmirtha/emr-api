@@ -26,7 +26,15 @@ export async function GET(
         );
     }
 
-    return NextResponse.json({ data: appointmentStatus });
+    const result = {
+        id: appointmentStatus.id,
+        name: appointmentStatus.name,
+        description: appointmentStatus.description,
+        code: appointmentStatus.code,
+        isActive: appointmentStatus.isActive,
+    }
+
+    return NextResponse.json({ data: result });
 }
 
 export async function PUT(
@@ -61,7 +69,15 @@ export async function PUT(
         );
     }
 
-    return NextResponse.json({ data: result.data });
+    const response = {
+        id: result.data.id,
+        name: result.data.name,
+        description: result.data.description,
+        code: result.data.code,
+        isActive: result.data.isActive,
+    }
+
+    return NextResponse.json({ data: response });
 }
 
 export async function DELETE(

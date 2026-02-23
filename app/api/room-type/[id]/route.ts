@@ -26,7 +26,14 @@ export async function GET(
         );
     }
 
-    return NextResponse.json({ data: roomType });
+    const result = {
+        id: roomType.id,
+        name: roomType.name,
+        description: roomType.description,
+        isActive: roomType.isActive,
+    }
+
+    return NextResponse.json({ data: result });
 }
 
 export async function PUT(
@@ -61,7 +68,14 @@ export async function PUT(
         );
     }
 
-    return NextResponse.json({ data: result.data });
+    const response = {
+        id: result.data.id,
+        name: result.data.name,
+        description: result.data.description,
+        isActive: result.data.isActive,
+    }
+
+    return NextResponse.json({ data: response });
 }
 
 export async function DELETE(

@@ -11,8 +11,18 @@ export async function GET(request: NextRequest) {
 
     const { data, total } = await getAppointmentStatusesQuery({ page, limit });
 
+const result = data.map((appointmentStatus) => {
+    return {
+        id: appointmentStatus.id,
+        name: appointmentStatus.name,
+        description: appointmentStatus.description,
+        code: appointmentStatus.code,
+        isActive: appointmentStatus.isActive,
+    }
+})
+
     return NextResponse.json({
-        data,
+        data: result,
         pageSize: limit,
         pageNumber: page,
         totalItems: total,
@@ -29,5 +39,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: "Validation failed", errors: result.errors }, { status: 400 });
     }
 
-    return NextResponse.json({ data: result.data }, { status: 201 });
+    const response = {
+        id: result.data.id,
+        name: result.data.name,
+        description: result.data.description,
+        code: result.data.code,
+        isActive: result.data.isActive,
+    }
+
+    return NextResponse.json({ data: response }, { status: 201 });
 }

@@ -26,7 +26,15 @@ export async function GET(
         );
     }
 
-    return NextResponse.json({ data: appointmentMode });
+    const result = {
+        id: appointmentMode.id,
+        name: appointmentMode.name,
+        description: appointmentMode.description,
+        code: appointmentMode.code,
+        isActive: appointmentMode.isActive,
+    }
+
+    return NextResponse.json({ data: result });
 }
 
 export async function PUT(
@@ -61,7 +69,15 @@ export async function PUT(
         );
     }
 
-    return NextResponse.json({ data: result.data });
+    const response = {
+        id: result.data.id,
+        name: result.data.name,
+        description: result.data.description,
+        code: result.data.code,
+        isActive: result.data.isActive,
+    }
+
+    return NextResponse.json({ data: response });
 }
 
 export async function DELETE(
