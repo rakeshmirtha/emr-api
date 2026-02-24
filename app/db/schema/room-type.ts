@@ -1,6 +1,6 @@
 import {integer, pgTable, varchar, text, boolean} from "drizzle-orm/pg-core"
 
-export const roomTypeTable = pgTable("roomType", {
+export const roomTypeTable = pgTable("room_type", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     name: varchar({ length: 255 }).notNull(),
     description: text().notNull(),
