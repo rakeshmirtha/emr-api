@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, boolean } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, boolean } from "drizzle-orm/pg-core";
 
 export const rotaManagementTable = pgTable("rota_management", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
