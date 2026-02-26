@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { getRoomTypesQuery } from "../modules/room-type/queries/get-room-types-query";
-import { createRoomTypeCommand } from "../modules/room-type/commands/create-room-type-command";
+import { getAppointmentStatusesQuery } from "../modules/appointment-status/queries/get-appointment-statuses-query";
+import { createAppointmentStatusCommand } from "../modules/appointment-status/commands/create-appointment-status-command";
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -9,14 +9,15 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "10", 10)));
 
-    const { data, total } = await getRoomTypesQuery({ page, limit });
+    const { data, total } = await getAppointmentStatusesQuery({ page, limit });
 
-const result = data.map((roomType) => {
+const result = data.map((appointmentStatus) => {
     return {
-        id: roomType.id,
-        name: roomType.name,
-        description: roomType.description,
-        isActive: roomType.isActive,
+        id: appointmentStatus.id,
+        name: appointmentStatus.name,
+        description: appointmentStatus.description,
+        code: appointmentStatus.code,
+        isActive: appointmentStatus.isActive,
     }
 })
 
@@ -32,7 +33,7 @@ const result = data.map((roomType) => {
 export async function POST(request: NextRequest) {
     const payload = await request.json();
 
-    const result = await createRoomTypeCommand(payload);
+    const result = await createAppointmentStatusCommand(payload);
 
     if (!result.success) {
         return NextResponse.json({ message: "Validation failed", errors: result.errors }, { status: 400 });
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest) {
         id: result.data.id,
         name: result.data.name,
         description: result.data.description,
+        code: result.data.code,
         isActive: result.data.isActive,
     }
 

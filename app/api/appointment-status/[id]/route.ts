@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRoomTypeByIdQuery } from "../../modules/room-type/queries/get-room-type-by-id-query";
-import { updateRoomTypeCommand } from "../../modules/room-type/commands/update-room-type-command";
-import { deleteRoomTypeCommand } from "../../modules/room-type/commands/delete-room-type-command";
+import { getAppointmentStatusByIdQuery } from "../../modules/appointment-status/queries/get-appointment-status-by-id-query";
+import { updateAppointmentStatusCommand } from "../../modules/appointment-status/commands/update-appointment-status-command";
+import { deleteAppointmentStatusCommand } from "../../modules/appointment-status/commands/delete-appointment-status-command";
 
 export async function GET(
     request: NextRequest,
@@ -12,25 +12,26 @@ export async function GET(
 
     if (isNaN(id)) {
         return NextResponse.json(
-            { message: "Invalid room type ID" },
+            { message: "Invalid appointment status ID" },
             { status: 400 }
         );
     }
 
-    const roomType = await getRoomTypeByIdQuery(id);
+    const appointmentStatus = await getAppointmentStatusByIdQuery(id);
 
-    if (!roomType) {
+    if (!appointmentStatus) {
         return NextResponse.json(
-            { message: "Room type not found" },
+            { message: "Appointment status not found" },
             { status: 404 }
         );
     }
 
     const result = {
-        id: roomType.id,
-        name: roomType.name,
-        description: roomType.description,
-        isActive: roomType.isActive,
+        id: appointmentStatus.id,
+        name: appointmentStatus.name,
+        description: appointmentStatus.description,
+        code: appointmentStatus.code,
+        isActive: appointmentStatus.isActive,
     }
 
     return NextResponse.json({ data: result });
@@ -45,21 +46,21 @@ export async function PUT(
 
     if (isNaN(id)) {
         return NextResponse.json(
-            { message: "Invalid room type ID" },
+            { message: "Invalid appointment status ID" },
             { status: 400 }
         );
     }
 
-    const existingRoomType = await getRoomTypeByIdQuery(id);
-    if (!existingRoomType) {
+    const existingAppointmentStatus = await getAppointmentStatusByIdQuery(id);
+    if (!existingAppointmentStatus) {
         return NextResponse.json(
-            { message: "Room type not found" },
+            { message: "Appointment status not found" },
             { status: 404 }
         );
     }
 
     const payload = await request.json();
-    const result = await updateRoomTypeCommand(id, payload);
+    const result = await updateAppointmentStatusCommand(id, payload);
 
     if (!result.success) {
         return NextResponse.json(
@@ -72,6 +73,7 @@ export async function PUT(
         id: result.data.id,
         name: result.data.name,
         description: result.data.description,
+        code: result.data.code,
         isActive: result.data.isActive,
     }
 
@@ -87,27 +89,27 @@ export async function DELETE(
 
     if (isNaN(id)) {
         return NextResponse.json(
-            { message: "Invalid room type ID" },
+            { message: "Invalid appointment status ID" },
             { status: 400 }
         );
     }
 
-    const existingRoomType = await getRoomTypeByIdQuery(id);
-    if (!existingRoomType) {
+    const existingAppointmentStatus = await getAppointmentStatusByIdQuery(id);
+    if (!existingAppointmentStatus) {
         return NextResponse.json(
-            { message: "Room type not found" },
+            { message: "Appointment status not found" },
             { status: 404 }
         );
     }
 
-    const result = await deleteRoomTypeCommand(id);
+    const result = await deleteAppointmentStatusCommand(id);
 
     if (!result.success) {
         return NextResponse.json(
-            { message: "Failed to delete room type", errors: result.errors },
+            { message: "Failed to delete appointment status", errors: result.errors },
             { status: 400 }
         );
     }
 
-    return NextResponse.json({ data: "Room type deleted successfully" });
+    return NextResponse.json({ data: "Appointment status deleted successfully" });
 }

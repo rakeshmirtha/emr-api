@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { getRoomTypesQuery } from "../modules/room-type/queries/get-room-types-query";
-import { createRoomTypeCommand } from "../modules/room-type/commands/create-room-type-command";
+import { getRotaManagementsQuery } from "../modules/rota-management/queries/get-rota-managements-query";
+import { createRotaManagementCommand } from "../modules/rota-management/commands/create-rota-management-command";
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -9,16 +8,15 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "10", 10)));
 
-    const { data, total } = await getRoomTypesQuery({ page, limit });
+    const { data, total } = await getRotaManagementsQuery({ page, limit });
 
-const result = data.map((roomType) => {
-    return {
-        id: roomType.id,
-        name: roomType.name,
-        description: roomType.description,
-        isActive: roomType.isActive,
-    }
-})
+    const result = data.map((rota) => ({
+        id: rota.id,
+        name: rota.name,
+        fromTime: rota.fromTime,
+        toTime: rota.toTime,
+        isActive: rota.isActive,
+    }));
 
     return NextResponse.json({
         data: result,
@@ -32,7 +30,7 @@ const result = data.map((roomType) => {
 export async function POST(request: NextRequest) {
     const payload = await request.json();
 
-    const result = await createRoomTypeCommand(payload);
+    const result = await createRotaManagementCommand(payload);
 
     if (!result.success) {
         return NextResponse.json({ message: "Validation failed", errors: result.errors }, { status: 400 });
@@ -41,9 +39,10 @@ export async function POST(request: NextRequest) {
     const response = {
         id: result.data.id,
         name: result.data.name,
-        description: result.data.description,
+        fromTime: result.data.fromTime,
+        toTime: result.data.toTime,
         isActive: result.data.isActive,
-    }
+    };
 
     return NextResponse.json({ data: response }, { status: 201 });
 }
