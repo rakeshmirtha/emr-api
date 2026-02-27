@@ -74,6 +74,6 @@ DROP TABLE "appointmentReason" CASCADE;--> statement-breakpoint
 DROP TABLE "appointmentStatus" CASCADE;--> statement-breakpoint
 DROP TABLE "appointmentType" CASCADE;--> statement-breakpoint
 DROP TABLE "roomType" CASCADE;--> statement-breakpoint
-ALTER TABLE "room" DROP CONSTRAINT "room_roomTypeId_roomType_id_fk";
+
 --> statement-breakpoint
 ALTER TABLE "room" ADD CONSTRAINT "room_roomTypeId_room_type_id_fk" FOREIGN KEY ("roomTypeId") REFERENCES "public"."room_type"("id") ON DELETE no action ON UPDATE no action;

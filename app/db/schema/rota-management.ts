@@ -1,10 +1,10 @@
-import { integer, pgTable, varchar, boolean } from "drizzle-orm/pg-core";
+import { integer, pgTable, varchar, boolean, time } from "drizzle-orm/pg-core";
 
 export const rotaManagementTable = pgTable("rota_management", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: varchar({ length: 255 }).notNull(),
-    fromTime: varchar({ length: 255 }).notNull(),
-    toTime: varchar({ length: 255 }).notNull(),
-    isActive: boolean().notNull().default(true),
-    isDeleted: boolean().notNull().default(false),
+    name: varchar("name", { length: 255 }).notNull(),
+    fromTime: time("from_time").notNull(),
+    toTime: time("to_time").notNull(),
+    isActive: boolean("is_active").notNull().default(true),
+    isDeleted: boolean("is_deleted").notNull().default(false),
 });
