@@ -40,3 +40,22 @@ export type CreateClinicianScheduleResponse = {
     clinicianScheduleId: number;
     clinicianSlots: ClinicianSlotResponse[];
 };
+
+export type RotaDetail = {
+    rotaId: number;
+    rotaName: string;
+    rotaTime: string;
+};
+
+export type ScheduleDetail = {
+    clinicianScheduleId: number;
+    scheduleDate: string;
+    slotInMinute: string;
+    rotaDetails: RotaDetail[];
+};
+
+export type GetClinicianScheduleResponse = {
+    clinicianId: number;
+    clinicianName: string;
+    scheduleDetails: ScheduleDetail[];
+};

@@ -73,9 +73,38 @@ async function createSlots(slots: {
         });
 }
 
+async function getClinicianSchedules({ page = 1, limit = 10 }: { page?: number; limit?: number } = {}) {
+    const offset = (page - 1) * limit;
+
+    const rows = await db
+        .select({
+            clinicianId: clinicians.id,
+            clinicianName: clinicians.name,
+            clinicianScheduleId: clinicianScheduleTable.id,
+            slotFromDate: clinicianScheduleTable.slotFromDate,
+            slotToDate: clinicianScheduleTable.slotToDate,
+            slotInMinute: clinicianScheduleTable.slotInMinute,
+            slotDate: clinicianSlotTable.clinicianSlotDate,
+            rotaId: rotaManagementTable.id,
+            rotaName: rotaManagementTable.name,
+            rotaFromTime: rotaManagementTable.fromTime,
+            rotaToTime: rotaManagementTable.toTime,
+        })
+        .from(clinicians)
+        .innerJoin(clinicianScheduleTable, eq(clinicianScheduleTable.clinicianId, clinicians.id))
+        .innerJoin(clinicianSlotTable, eq(clinicianSlotTable.scheduleId, clinicianScheduleTable.id))
+        .innerJoin(rotaManagementTable, eq(rotaManagementTable.id, clinicianSlotTable.rotaId))
+        .where(eq(clinicians.isDeleted, false))
+        .limit(limit)
+        .offset(offset);
+
+    return rows;
+}
+
 export const clinicianScheduleRepository = {
     getClinicianById,
     getRotasByIds,
     createSchedule,
     createSlots,
+    getClinicianSchedules,
 };
