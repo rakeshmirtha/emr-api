@@ -59,3 +59,14 @@ export type GetClinicianScheduleResponse = {
     clinicianName: string;
     scheduleDetails: ScheduleDetail[];
 };
+
+export type GetClinicianScheduleByIdResponse = {
+    clinicianScheduleId: number;
+    clinicianId: number;
+    clinicianName: string;
+    slotFromDate: string;
+    slotToDate: string;
+    slotInMinute: number;
+    scheduleDetails: ScheduleDetail[];
+};
+
