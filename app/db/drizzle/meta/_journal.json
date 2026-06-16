@@ -29,6 +29,34 @@
       "when": 1771242424623,
       "tag": "0003_flowery_korg",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771571065820,
+      "tag": "0004_groovy_wolfsbane",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1771914544927,
+      "tag": "0005_unique_the_twelve",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772091893103,
+      "tag": "0006_long_namorita",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772108604147,
+      "tag": "0007_ordinary_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }

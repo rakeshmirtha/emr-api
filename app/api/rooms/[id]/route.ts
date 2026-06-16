@@ -26,7 +26,21 @@ export async function GET(
         );
     }
 
-    return NextResponse.json({ data: room });
+    const result = {
+        id: room.id,
+        name: room.name,
+        roomLocation: room.roomLocation,
+        roomTypeId: room.roomTypeId,
+        isActive: room.isActive,
+        roomType: {
+            id: room.roomType.id,
+            name: room.roomType.name,
+            description: room.roomType.description,
+            isActive: room.roomType.isActive,
+        },
+    }
+
+    return NextResponse.json({ data: result });
 }
 
 export async function PUT(
@@ -53,7 +67,21 @@ export async function PUT(
         );
     }
 
-    return NextResponse.json({ data: result.data });
+    const response = {
+        id: result.data!.id,
+        name: result.data!.name,
+        roomLocation: result.data!.roomLocation,
+        roomTypeId: result.data!.roomTypeId,
+        isActive: result.data!.isActive,
+        roomType: {
+            id: result.data!.roomType.id,
+            name: result.data!.roomType.name,
+            description: result.data!.roomType.description,
+            isActive: result.data!.roomType.isActive,
+        },
+    }
+
+    return NextResponse.json({ data: response });
 }
 
 export async function DELETE(
